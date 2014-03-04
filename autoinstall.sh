@@ -262,16 +262,35 @@ wget http://ftp.us.debian.org/debian/pool/main/libv/libvpx/libvpx-dev_0.9.1-2_am
 wget http://ftp.us.debian.org/debian/pool/main/libv/libvpx/libvpx0_0.9.1-2_amd64.deb
 #
 sudo aptitude -y -f --purge remove libffms2-2 liblsmash1 libvpx && rm -rf /usr/lib/libvpx.so
-sudo dpkg -i libvpx0_0.9.1-2_amd64.deb libvpx-dev_0.9.1-2_amd64.deb
-sudo aptitude -y -f install  libvpx-dev libvpx1
+sudo dpkg -i libvpx0_0.9.1-2_amd64.deb libvpx-dev_0.9.1-2_amd64.deb 
+sudo aptitude -y -f install  libvpx-dev libvpx1 
 sudo aptitude -y -f install libraw1394-dev libraw1394-tools libdc1394-22 libdc1394-22-dev
 #
-# Install FFMPEG v2.0.1
-cd /usr/local/src
-mkdir /usr/local/share/ffmpeg
-wget http://ffmpeg.org/releases/ffmpeg-2.0.1.tar.gz
-tar -xvzf ffmpeg-2.0.1.tar.gz
-cd ffmpeg-2.0.1
+#
+#
+### Install The Latest FFMpeg from Git ###
+# git clone git://source.ffmpeg.org/ffmpeg.git
+# cd ffmpeg
+#
+#
+### Install FFMPEG v2.0.1 ###
+# cd /usr/local/src
+# mkdir /usr/local/share/ffmpeg
+# wget http://ffmpeg.org/releases/ffmpeg-2.0.1.tar.gz
+# tar -xvzf ffmpeg-2.0.1.tar.gz
+# cd ffmpeg-2.0.1
+# 
+#
+### Install FFMPEG v2.1 |  28-Oct-2013 02:11 ###
+# wget http://ffmpeg.org/releases/ffmpeg-2.1.tar.gz
+# tar xzvf ffmpeg-2.1.tar.gz
+# cd ffmpeg-2.1
+#	
+#
+# Install FFMPEG v2.2-rc1 |  01-Mar-2014 04:27
+wget http://ffmpeg.org/releases/ffmpeg-2.2-rc1.tar.gz
+ar xzvf ffmpeg-2.2-rc1.tar.gz
+cd ffmpeg-2.2-rc1
 #
 #
 # Full build
@@ -281,12 +300,12 @@ cd ffmpeg-2.0.1
 --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvpx
 #
 sudo make
-sudo checkinstall --pkgname=ffmpeg --pkgversion="5:${FFMPEG_VERSION}" --backup=no --deldoc=yes --default
+sudo checkinstall --pkgname=ffmpeg --pkgversion="${FFMPEG_VERSION}" --backup=no --deldoc=yes --default
 #
 #
 #
 #root@indobroadcast:/usr/local/src/ffmpeg-2.0.1# ffmpeg -version
-#ffmpeg version 2.0.1
+#ffmpeg version 2.2
 #built on Mar  5 2014 02:16:47 with gcc 4.7 (Debian 4.7.2-5)
 #configuration: --enable-gpl --enable-postproc --enable-swscale --enable-pthreads --enable-x11grab --enable-libdc1394 --enable-libfaac --enable-libgsm --enable-libmp3lame 
 #--enable-libtheora --enable-libvorbis --enable-libx264 --enable-libxvid --enable-nonfree --enable-version3 --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvpx
