@@ -29,6 +29,7 @@ sudo aptitude -y -f install libfaad-dev faad faac libfaac0 libfaac-dev libmp3lam
 build-essential checkinstall libffi5 subversion libmpfr4 libmpfr-dev ffmpeg
 sudo aptitude -y -f install
 #
+#
 # Copy file for fixing depedency
 cd /var/cache/apt/archives
 wget http://ftp.us.debian.org/debian/pool/main/g/gmp/libgmp3c2_4.3.2+dfsg-1_amd64.deb
@@ -193,6 +194,79 @@ sudo bbb-conf --clean
 sudo bbb-conf --restart
 # sudo bbb-conf --setip 192.168.1.100
 #
-# Thank you, for support & BBB-Hosting send info via: admin@indobroadcast.com
+#
+#
+#
+# Now we will remove default ffmpeg and change to version v2.0.1 (ready for bbb video record)
+#
+#Install The Latest FFMPEG & Depedency
+sudo apt-get -y -f --purge remove ffmpeg yasm x264 libx264 libvpx libmp3lame
+#
+#
+## Install Yasm 1.2
+cd /usr/local/src
+sudo apt-get install build-essential checkinstall
+sudo apt-get build-dep yasm
+wget http://www.tortall.net/projects/yasm/releases/yasm-1.2.0.tar.gz  
+tar -xf yasm-1.2.0.tar.gz && cd yasm-1.2.0 
+sudo ./configure
+sudo make
+sudo checkinstall --pakdir "$HOME/Desktop" --pkgname yasm --pkgversion 1.2.0 --backup=no --default
+#
+#
+## Install libvpx; This is used to encode and decode VP8 video (WebM).
+cd /usr/local/src
+sudo git clone http://git.chromium.org/webm/libvpx.git
+cd libvpx
+sudo ./configure
+sudo make
+sudo sudo checkinstall --pkgname=libvpx --pkgversion="`date +%Y%m%d%H%M`-git" --backup=no --default --deldoc=yes
+#
+#
+# Install X264
+cd /usr/local/src
+sudo git clone git://git.videolan.org/x264.git
+cd x264
+sudo ./configure --enable-static --disable-opencl
+sudo make
+sudo checkinstall --pkgname=x264 --default --pkgversion="3:$(./version.sh | awk -F'[" ]' '/POINT/{print $4"+git"$5}')" --backup=no --deldoc=yes
+#
+#
+# Install lame Used for MP3
+cd /usr/local/src
+wget http://sourceforge.net/projects/lame/files/lame/3.98.4/lame-3.98.4.tar.gz
+tar xzvf lame-3.98.4.tar.gz
+cd lame-3.98.4
+sudo ./configure --enable-nasm --disable-shared
+sudo make
+sudo checkinstall --pkgname=lame-ffmpeg --pkgversion="3.98.4" --backup=no --default --deldoc=yes
+#
+#
+## Install The Latest FFMpeg
+cd /usr/local/src
+#git clone git://source.ffmpeg.org/ffmpeg.git
+#cd ffmpeg
+#sudo ./configure --enable-gpl --enable-postproc --enable-swscale --enable-pthreads --enable-x11grab \
+#--enable-libdc1394 --enable-libfaac --enable-libgsm --enable-libmp3lame --enable-libtheora \
+#--enable-libvorbis --enable-libx264 --enable-libxvid --enable-nonfree --enable-version3 \
+#--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvpx
+#
+# Install FFMPEG v2.0.1
+sudo aptitude -y -f --purge remove ffmpeg
+cd /usr/local/src
+wget http://ffmpeg.org/releases/ffmpeg-2.0.1.tar.gz
+tar -xvzf ffmpeg-2.0.1.tar.gz
+cd ffmpeg-2.0.1
+sudo ./configure --enable-gpl --enable-version3 --enable-nonfree --enable-postproc --enable-libfaac --enable-libopencore-amrnb \
+--enable-libopencore-amrwb --enable-libtheora --enable-libvorbis --enable-libxvid --enable-x11grab --enable-libmp3lame --enable-libvpx
+sudo make
+sudo checkinstall --pkgname=ffmpeg --pkgversion="5:${FFMPEG_VERSION}" --backup=no --deldoc=yes --default
+#
+#
+sudo bbb-conf --check
+sudo bbb-conf --restart
+#
+#
+# Thank you very much, for support & BBB-Hosting send info via: admin@indobroadcast.com
 
 
