@@ -197,36 +197,51 @@ sudo bbb-conf --restart
 #
 #
 #
-# Now we will remove default ffmpeg and change to version v2.0.1 (ready for bbb video record)
-#
-#Install The Latest FFMPEG & Depedency
-sudo apt-get -y -f --purge remove ffmpeg yasm x264 libx264 libvpx libmp3lame
-#
-#
-## Install Yasm 1.2
+##### Rebuild FFMPEG v2.0.1 Full Features  ######
+
+
+# Add multimedia source
+    echo "deb http://www.deb-multimedia.org wheezy main non-free" | sudo tee /etc/apt/sources.list
+    echo "deb http://www.deb-multimedia.org wheezy-backports main" | sudo tee /etc/apt/sources.list
+
+sudo apt-get update
+sudo apt-get -y -f install deb-multimedia-keyring
+sudo aptitude -y -f dist-upgrade
+
+# Install FFMPEG Depedency
+
+sudo aptitude -y -f install build-essential git-core checkinstall subversion make \
+libjpeg62-dev libxext-dev ffmpeg libgnutls-dev libgnutls-openssl27 libgnutls26 \
+libgnutlsxx27 libfaad-dev faad faac libfaac0 libfaac-dev libmp3lame-dev yasm texi2html \
+x264 libx264-dev libxvidcore-dev libffi5 libmpfr4 libmpfr-dev libopencore-amrnb-dev \
+libopencore-amrwb-dev libtheora-dev libvorbis-dev libxfixes-dev libxvidcore-dev zlib1g-dev
+
+
+## installYasm 1.2.0
 cd /usr/local/src
-sudo apt-get install build-essential checkinstall
-sudo apt-get build-dep yasm
-wget http://www.tortall.net/projects/yasm/releases/yasm-1.2.0.tar.gz  
-tar -xf yasm-1.2.0.tar.gz && cd yasm-1.2.0 
+sudo wget http://www.tortall.net/projects/yasm/releases/yasm-1.2.0.tar.gz
+sudo tar xzvf yasm-1.2.0.tar.gz
+cd yasm-1.2.0
 sudo ./configure
 sudo make
 sudo checkinstall --pakdir "$HOME/Desktop" --pkgname yasm --pkgversion 1.2.0 --backup=no --default
-#
-#
-## Install libvpx; This is used to encode and decode VP8 video (WebM).
+
+# Setup libvpx
 cd /usr/local/src
 sudo git clone http://git.chromium.org/webm/libvpx.git
 cd libvpx
-sudo ./configure
+./configure --prefix=/usr \
+                --enable-shared \
+                --disable-static
 sudo make
-sudo sudo checkinstall --pkgname=libvpx --pkgversion="`date +%Y%m%d%H%M`-git" --backup=no --default --deldoc=yes
+sudo checkinstall --pkgname=libvpx --pkgversion="`date +%Y%m%d%H%M`-git" --backup=no --default --deldoc=yes
 #
 #
-# Install X264
+#Install X264
 cd /usr/local/src
-sudo git clone git://git.videolan.org/x264.git
-cd x264
+mkdir /usr/local/lib/pkgconfig
+sudo git clone git://git.videolan.org/x264
+cd x264/
 sudo ./configure --enable-static --disable-opencl
 sudo make
 sudo checkinstall --pkgname=x264 --default --pkgversion="3:$(./version.sh | awk -F'[" ]' '/POINT/{print $4"+git"$5}')" --backup=no --deldoc=yes
@@ -234,8 +249,7 @@ sudo checkinstall --pkgname=x264 --default --pkgversion="3:$(./version.sh | awk 
 #
 # Install lame Used for MP3
 cd /usr/local/src
-#
-wget http://nchc.dl.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+wget http://sourceforge.net/projects/lame/files/lame/3.99/lame-3.99.5.tar.gz
 tar xzvf lame-3.99.5.tar.gz
 cd lame-3.99.5
 sudo ./configure --enable-nasm --disable-shared
@@ -243,31 +257,63 @@ sudo make
 sudo checkinstall --pkgname=lame-ffmpeg --pkgversion="3.99.5" --backup=no --default --deldoc=yes
 #
 #
-## Install The Latest FFMpeg
-cd /usr/local/src
-#git clone git://source.ffmpeg.org/ffmpeg.git
-#cd ffmpeg
-#sudo ./configure --enable-gpl --enable-postproc --enable-swscale --enable-pthreads --enable-x11grab \
-#--enable-libdc1394 --enable-libfaac --enable-libgsm --enable-libmp3lame --enable-libtheora \
-#--enable-libvorbis --enable-libx264 --enable-libxvid --enable-nonfree --enable-version3 \
-#--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvpx
+# Fixing Depedency
+wget http://ftp.us.debian.org/debian/pool/main/libv/libvpx/libvpx-dev_0.9.1-2_amd64.deb
+wget http://ftp.us.debian.org/debian/pool/main/libv/libvpx/libvpx0_0.9.1-2_amd64.deb
+#
+sudo aptitude -y -f --purge remove libffms2-2 liblsmash1 libvpx && rm -rf /usr/lib/libvpx.so
+sudo dpkg -i libvpx0_0.9.1-2_amd64.deb libvpx-dev_0.9.1-2_amd64.deb
+sudo aptitude -y -f install  libvpx-dev libvpx1
+sudo aptitude -y -f install libraw1394-dev libraw1394-tools libdc1394-22 libdc1394-22-dev
 #
 # Install FFMPEG v2.0.1
-sudo aptitude -y -f --purge remove ffmpeg
 cd /usr/local/src
+mkdir /usr/local/share/ffmpeg
 wget http://ffmpeg.org/releases/ffmpeg-2.0.1.tar.gz
 tar -xvzf ffmpeg-2.0.1.tar.gz
 cd ffmpeg-2.0.1
-sudo ./configure --enable-gpl --enable-version3 --enable-nonfree --enable-postproc --enable-libfaac --enable-libopencore-amrnb \
---enable-libopencore-amrwb --enable-libtheora --enable-libvorbis --enable-libxvid --enable-x11grab --enable-libmp3lame --enable-libvpx
+#
+#
+# Full build
+./configure --enable-gpl --enable-postproc --enable-swscale --enable-pthreads --enable-x11grab \
+--enable-libdc1394 --enable-libfaac --enable-libgsm --enable-libmp3lame --enable-libtheora \
+--enable-libvorbis --enable-libx264 --enable-libxvid --enable-nonfree --enable-version3 \
+--enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvpx
+#
 sudo make
 sudo checkinstall --pkgname=ffmpeg --pkgversion="5:${FFMPEG_VERSION}" --backup=no --deldoc=yes --default
 #
 #
+#
+#root@indobroadcast:/usr/local/src/ffmpeg-2.0.1# ffmpeg -version
+#ffmpeg version 2.0.1
+#built on Mar  5 2014 02:16:47 with gcc 4.7 (Debian 4.7.2-5)
+#configuration: --enable-gpl --enable-postproc --enable-swscale --enable-pthreads --enable-x11grab --enable-libdc1394 --enable-libfaac --enable-libgsm --enable-libmp3lame 
+#--enable-libtheora --enable-libvorbis --enable-libx264 --enable-libxvid --enable-nonfree --enable-version3 --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvpx
+#libavutil      52. 38.100 / 52. 38.100
+#libavcodec     55. 18.102 / 55. 18.102
+#libavformat    55. 12.100 / 55. 12.100
+#libavdevice    55.  3.100 / 55.  3.100
+#libavfilter     3. 79.101 /  3. 79.101
+#libswscale      2.  3.100 /  2.  3.100
+#libswresample   0. 17.102 /  0. 17.102
+#libpostproc    52.  3.100 / 52.  3.100
+#
+#
+#
+#
+#
+sudo service nginx restart
+sudo service red5 restart
+sudo service tomcat6 restart
+#
+sudo bbb-conf --clear
 sudo bbb-conf --check
 sudo bbb-conf --restart
+#sudo bbb-conf --setip 192.168.1.100
 #
 #
 # Thank you very much, for support & BBB-Hosting send info via: admin@indobroadcast.com
+# Best Regards, Bernard Situmeang
 
 
