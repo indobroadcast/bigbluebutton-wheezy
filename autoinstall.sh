@@ -201,8 +201,8 @@ sudo bbb-conf --restart
 
 
 # Add multimedia source
-    echo "deb http://www.deb-multimedia.org wheezy main non-free" | sudo tee /etc/apt/sources.list
-    echo "deb http://www.deb-multimedia.org wheezy-backports main" | sudo tee /etc/apt/sources.list
+echo "deb http://www.deb-multimedia.org wheezy main non-free" | sudo tee /etc/apt/sources.list
+echo "deb http://www.deb-multimedia.org wheezy-backports main" | sudo tee /etc/apt/sources.list
 
 sudo apt-get update
 sudo apt-get -y -f install deb-multimedia-keyring
@@ -281,16 +281,16 @@ sudo aptitude -y -f install libraw1394-dev libraw1394-tools libdc1394-22 libdc13
 # cd ffmpeg-2.0.1
 # 
 #
-### Install FFMPEG v2.1 |  28-Oct-2013 02:11 ###
-# wget http://ffmpeg.org/releases/ffmpeg-2.1.tar.gz
-# tar xzvf ffmpeg-2.1.tar.gz
-# cd ffmpeg-2.1
+### Install FFMPEG v2.1 |  28-Oct-2013 02:11 ###  >> very good version for video record on Wheezy!! 
+wget http://ffmpeg.org/releases/ffmpeg-2.1.tar.gz
+tar xzvf ffmpeg-2.1.tar.gz
+cd ffmpeg-2.1
 #	
 #
 # Install FFMPEG v2.2-rc1 |  01-Mar-2014 04:27
-wget http://ffmpeg.org/releases/ffmpeg-2.2-rc1.tar.gz
-tar xzvf ffmpeg-2.2-rc1.tar.gz
-cd ffmpeg-2.2-rc1
+# wget http://ffmpeg.org/releases/ffmpeg-2.2-rc1.tar.gz
+# tar xzvf ffmpeg-2.2-rc1.tar.gz
+# cd ffmpeg-2.2-rc1
 #
 #
 # Full build
@@ -305,7 +305,7 @@ sudo checkinstall --pkgname=ffmpeg --pkgversion="${FFMPEG_VERSION}" --backup=no 
 #
 #
 #root@indobroadcast:/usr/local/src/ffmpeg-2.2-rc1# ffmpeg -version
-#ffmpeg version 2.2-rc1
+#ffmpeg version 2.1
 #built on Mar  5 2014 02:16:47 with gcc 4.7 (Debian 4.7.2-5)
 #configuration: --enable-gpl --enable-postproc --enable-swscale --enable-pthreads --enable-x11grab --enable-libdc1394 --enable-libfaac --enable-libgsm --enable-libmp3lame 
 #--enable-libtheora --enable-libvorbis --enable-libx264 --enable-libxvid --enable-nonfree --enable-version3 --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvpx
