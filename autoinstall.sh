@@ -29,10 +29,6 @@ sudo aptitude -y -f install libfaad-dev faad faac libfaac0 libfaac-dev libmp3lam
 build-essential checkinstall libffi5 subversion libmpfr4 libmpfr-dev ffmpeg
 sudo aptitude -y -f install
 #
-#
-#
-#
-#
 # Copy file for fixing depedency
 cd /var/cache/apt/archives
 wget http://ftp.us.debian.org/debian/pool/main/g/gmp/libgmp3c2_4.3.2+dfsg-1_amd64.deb
@@ -40,20 +36,29 @@ wget http://free.nchc.org.tw/ubuntu//pool/main/m/mpfr/libmpfr1ldbl_2.4.2-3ubuntu
 wget http://ftp.us.debian.org/debian/pool/main/o/openssl/libssl0.9.8_0.9.8o-4squeeze14_amd64.deb
 #
 sudo dpkg -i libgmp3c2_4.3.2+dfsg-1_amd64.deb libmpfr1ldbl_2.4.2-3ubuntu1_amd64.deb libssl0.9.8_0.9.8o-4squeeze14_amd64.deb
+sudo aptitude -y -f install
 #
-
-#
-# Copy file sun-java6
+# Copy file sun-java6 & depedency
+cd /var/cache/apt/archives
 wget http://ftp.us.debian.org/debian/pool/non-free/s/sun-java6/ia32-sun-java6-bin_6.26-0squeeze1_amd64.deb
 wget http://ftp.us.debian.org/debian/pool/non-free/s/sun-java6/sun-java6-bin_6.26-0squeeze1_amd64.deb
 wget http://ftp.us.debian.org/debian/pool/non-free/s/sun-java6/sun-java6-jdk_6.26-0squeeze1_amd64.deb
 wget http://ftp.us.debian.org/debian/pool/non-free/s/sun-java6/sun-java6-jre_6.26-0squeeze1_all.deb
 #
-
-
-
-
-
+cd /var/cache/apt/archives
+wget http://ftp.us.debian.org/debian/pool/main/i/ia32-libs/ia32-libs-i386_0.4_i386.deb
+wget http://ftp.us.debian.org/debian/pool/main/i/ia32-libs/ia32-libs_20140131_amd64.deb
+wget http://ftp.us.debian.org/debian/pool/main/e/eglibc/libc6-i386_2.11.3-4_amd64.deb
+wget http://ftp.us.debian.org/debian/pool/main/e/eglibc/libc6_2.11.3-4_amd64.deb
+wget http://ftp.us.debian.org/debian/pool/main/e/eglibc/libc6-i686_2.11.3-4_i386.deb
+#
+cd /var/cache/apt/archives
+dpkg -i ia32-libs-i386_0.4_i386.deb ia32-libs_20140131_amd64.deb libc6-i386_2.11.3-4_amd64.deb libc6_2.11.3-4_amd64.deb libc6-i686_2.11.3-4_i386.deb
+dpkg -i ia32-sun-java6-bin_6.26-0squeeze1_amd64.deb sun-java6-bin_6.26-0squeeze1_amd64.deb 
+dpkg -i sun-java6-jdk_6.26-0squeeze1_amd64.deb sun-java6-jre_6.26-0squeeze1_all.deb
+#
+sudo aptitude -y -f install openjdk-6-jdk sun-java6-jdk sun-java6-jre && sudo aptitude -y -f install
+#
 # Install Flash plugin
 sudo aptitude -y -f install flashplugin-nonfree
 #
@@ -66,10 +71,10 @@ sudo aptitude -y -f build-dep python
 sudo aptitude -y -f build-dep ruby
 sudo aptitude -y -f build-dep java-package
 #
-sudo service apache2 stop
+sudo service apache2 stop && sudo aptitude -y -f --purge remove apache2
 sudo aptitude -y -f install nginx nginx-common nginx-full 
 sudo service nginx restart
-
+#
 # Install The Latest Libreoffice via backport
 sudo aptitude -y -t wheezy-backports install libreoffice libreoffice-common libreoffice-gnome
 sudo aptitude -y -f dist-upgrade && sudo apt-get -y -f install
@@ -152,7 +157,41 @@ sudo gem install fattr -v '2.2.1' -- --with-cflags=-w --disable-install-doc --no
 sudo gem install i18n -v '0.4.2' -- --with-cflags=-w --disable-install-doc --nodoc
 sudo gem install session -v '3.1.0' -- --with-cflags=-w --disable-install-doc --nodoc
 sudo gem install rush -v '0.6.8' -- --with-cflags=-w --disable-install-doc --nodoc
-
-
+#
+#
+## Install BigBlueButton 0.81
+#
+## Step 1
+#
+sudo aptitude -y -f install libjpeg62-dev \
+libbs2b0 liblzo2-2 libmpg123-0 libsox-fmt-alsa libsox-fmt-base libsox2 liblockfile1 \
+libvorbisidec1 libx264-132 mencoder sox vorbis-tools jsvc libcommons-daemon-java
+#
+#
+## Step 2
+sudo aptitude -y -f install java-package \
+authbind cabextract libcommons-dbcp-java libcommons-pool-java libecj-java \
+libgeronimo-jta-1.1-spec-java libtomcat6-java netcat-openbsd openoffice.org \
+ttf-mscorefonts-installer
+#
+#
+## Step 3
+sudo aptitude -y -f install bbb-record-core red5 bbb-freeswitch   
+#
+#
+## Step 4
+sudo aptitude -y -f install bbb-config \
+authbind bbb-apps bbb-apps-deskshare bbb-apps-sip bbb-apps-video bbb-client bbb-config bbb-openoffice-headless \
+bbb-playback-presentation bbb-web cabextract libcommons-dbcp-java libcommons-pool-java libecj-java \
+libgeronimo-jta-1.1-spec-java libtomcat6-java netcat-openbsd openoffice.org redis-server-2.2.4 swftools-0.9.1 tomcat6 \
+tomcat6-common bigbluebutton bbb-demo  
+#
+#
+sudo bbb-conf --check
+sudo bbb-conf --clean
+sudo bbb-conf --restart
+# sudo bbb-conf --setip 192.168.1.100
+#
+# Thank you, for support & BBB-Hosting send info via: admin@indobroadcast.com
 
 
