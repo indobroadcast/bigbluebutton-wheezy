@@ -186,6 +186,7 @@ bbb-playback-presentation bbb-web cabextract libcommons-dbcp-java libcommons-poo
 libgeronimo-jta-1.1-spec-java libtomcat6-java netcat-openbsd openoffice.org redis-server-2.2.4 swftools-0.9.1 tomcat6 \
 tomcat6-common bigbluebutton bbb-demo  
 #
+sudo aptitude -y -f install
 #
 sudo bbb-conf --check
 sudo bbb-conf --clean
