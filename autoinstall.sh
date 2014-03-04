@@ -234,12 +234,13 @@ sudo checkinstall --pkgname=x264 --default --pkgversion="3:$(./version.sh | awk 
 #
 # Install lame Used for MP3
 cd /usr/local/src
-wget http://sourceforge.net/projects/lame/files/lame/3.98.4/lame-3.98.4.tar.gz
-tar xzvf lame-3.98.4.tar.gz
-cd lame-3.98.4
+#
+wget http://nchc.dl.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+tar xzvf lame-3.99.5.tar.gz
+cd lame-3.99.5
 sudo ./configure --enable-nasm --disable-shared
 sudo make
-sudo checkinstall --pkgname=lame-ffmpeg --pkgversion="3.98.4" --backup=no --default --deldoc=yes
+sudo checkinstall --pkgname=lame-ffmpeg --pkgversion="3.99.5" --backup=no --default --deldoc=yes
 #
 #
 ## Install The Latest FFMpeg
