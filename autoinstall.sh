@@ -304,7 +304,7 @@ sudo checkinstall --pkgname=ffmpeg --pkgversion="5:${FFMPEG_VERSION}" --backup=n
 #
 #
 #
-#root@indobroadcast:/usr/local/src/ffmpeg-2.2-rc1# ffmpeg -version
+#root@indobroadcast:/usr/local/src/ffmpeg-2.1# ffmpeg -version
 #ffmpeg version 2.1
 #built on Mar  5 2014 02:16:47 with gcc 4.7 (Debian 4.7.2-5)
 #configuration: --enable-gpl --enable-postproc --enable-swscale --enable-pthreads --enable-x11grab --enable-libdc1394 --enable-libfaac --enable-libgsm --enable-libmp3lame 
