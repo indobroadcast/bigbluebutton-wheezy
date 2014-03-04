@@ -300,7 +300,7 @@ cd ffmpeg-2.1
 --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvpx
 #
 sudo make
-sudo checkinstall --pkgname=ffmpeg --pkgversion="${FFMPEG_VERSION}" --backup=no --deldoc=yes --default
+sudo checkinstall --pkgname=ffmpeg --pkgversion="5:${FFMPEG_VERSION}" --backup=no --deldoc=yes --default
 #
 #
 #
